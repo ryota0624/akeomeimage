@@ -88,8 +88,9 @@
 	    encType: "multipart/form-data"
 	  };
 	  if (imgUrl) {
-	    var tweet = window.location.href + "であけおめがぞう";
-	    return [m("img", { src: imgUrl }), m("h2", "よいお年を"), m("a", { href: "https://twitter.com/intent/tweet?text=" + tweet + "&url=" + tweet }, "tweet")];
+	    var tweetUrl = window.location.href + imgUrl.slice(1, imgUrl.length);
+	    var tweetText = window.location.href;
+	    return [m("img", { src: imgUrl }), m("h2", "よいお年を"), m("a", { href: "https://twitter.com/intent/tweet?text=" + tweetText + "&url=" + tweetUrl }, "tweet")];
 	  } else {
 	    return [m("p", "画像をupするとあけおめ入りにするよ（たぶん）"), m("form", formParam, [m("input", { class: "form-group", type: "file", name: makeRand(), encType: "multipart/form-data" }), m("input", { class: "btn btn-default", type: "button", value: "送信", onclick: ctrl.submit })])];
 	  }

@@ -42,12 +42,13 @@ const imgView = (imgUrl, ctrl) => {
     encType: "multipart/form-data"
   };
   if(imgUrl) {
-    const tweet = window.location.href+"であけおめがぞう"
+    const tweetUrl = window.location.href + imgUrl.slice(1, imgUrl.length)
+    const tweetText = window.location.href
     return (
       [
       m("img",{src: imgUrl}),
       m("h2","よいお年を"),
-      m("a",{href: `https://twitter.com/intent/tweet?text=${tweet}&url=${tweet}`},"tweet")
+      m("a",{href: `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`},"tweet")
       ]
     )
   } else {
