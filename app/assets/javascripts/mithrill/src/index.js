@@ -14,9 +14,8 @@ const makeRand = () => {
   return r
 }
 app.imgUpload = (ev) => {
-  m.startComputation();
   app.state = loading;
-  m.endComputation();
+  m.redraw();
   const data = new FormData(ev.target.parentNode);
   m.startComputation();
   request.post("/upload")
@@ -49,7 +48,7 @@ const imgView = (imgUrl, ctrl, state) => {
   };
   if(imgUrl) {
     const tweetUrl = window.location.href + imgUrl.slice(1, imgUrl.length)
-    const tweetText = window.location.href
+    const tweetText = window.location.href+" であけおめ画像"
     return (
       [
       m("img",{src: imgUrl}),

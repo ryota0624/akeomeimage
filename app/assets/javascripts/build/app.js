@@ -62,9 +62,8 @@
 	  return r;
 	};
 	app.imgUpload = function (ev) {
-	  m.startComputation();
 	  app.state = loading;
-	  m.endComputation();
+	  m.redraw();
 	  var data = new FormData(ev.target.parentNode);
 	  m.startComputation();
 	  request.post("/upload").send(data).end(function (err, res) {
@@ -95,7 +94,7 @@
 	  };
 	  if (imgUrl) {
 	    var tweetUrl = window.location.href + imgUrl.slice(1, imgUrl.length);
-	    var tweetText = window.location.href;
+	    var tweetText = window.location.href + " であけおめ画像";
 	    return [m("img", { src: imgUrl }), m("h2", "よいお年を"), m("a", { href: "https://twitter.com/intent/tweet?text=" + tweetText + "&url=" + tweetUrl }, "tweet")];
 	  } else {
 	    switch (state) {
