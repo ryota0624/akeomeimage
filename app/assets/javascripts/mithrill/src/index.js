@@ -15,7 +15,10 @@ const makeRand = () => {
 }
 app.imgUpload = (ev) => {
   m.startComputation();
+  app.state = loading;
+  m.endComputation();
   const data = new FormData(ev.target.parentNode);
+  m.startComputation();
   request.post("/upload")
     .send(data)
     .end((err, res) => {
@@ -24,7 +27,10 @@ app.imgUpload = (ev) => {
       m.endComputation();
     })
 }
-app.imgUrl = null
+app.imgUrl = null;
+const loading = "loading";
+const done = "done";
+app.state = done;
 app.controller = () => {
   let upImage = app.imgUpload;
   let imgUrl = app.imgUrl;
@@ -36,7 +42,7 @@ app.controller = () => {
   }
 }
 
-const imgView = (imgUrl, ctrl) => {
+const imgView = (imgUrl, ctrl, state) => {
   let formParam = {
     method: "post",
     encType: "multipart/form-data"
@@ -52,20 +58,33 @@ const imgView = (imgUrl, ctrl) => {
       ]
     )
   } else {
-    return (
-      [
-      m("p","画像をupするとあけおめ入りにするよ（たぶん）"),
-      m("form",formParam,[
-        m("input", {class: "form-group",type: "file", name: makeRand(), encType: "multipart/form-data"}),
-        m("input", {class: "btn btn-default",type: "button", value: "送信", onclick: ctrl.submit})
-      ])
-    ]
-  )
+    switch (state) {
+      case loading:
+        const bar = {
+          class: "progress-bar progress-bar-striped active",
+          role: "progressbar",
+          style: "width: 100%"
+        }
+        return (
+          m("div",{class: "progress"}, m("div", bar))
+        )
+      case done:
+        return (
+          [
+            m("p","画像をupするとあけおめ入りにするよ（たぶん）"),
+            m("form",formParam,[
+              m("input", {class: "form-group",type: "file", name: makeRand(), encType: "multipart/form-data"}),
+              m("input", {class: "btn btn-default",type: "button", value: "送信", onclick: ctrl.submit})
+            ])
+          ]
+        )
+    }
   }
 }
 
 app.view = (ctrl) => {
-  let component = imgView(app.imgUrl, ctrl);
+  let component = imgView(app.imgUrl, ctrl, app.state);
+  console.log(app.state)
   return m("div",
   [component]
   )

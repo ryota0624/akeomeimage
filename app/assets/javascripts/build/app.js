@@ -63,7 +63,10 @@
 	};
 	app.imgUpload = function (ev) {
 	  m.startComputation();
+	  app.state = loading;
+	  m.endComputation();
 	  var data = new FormData(ev.target.parentNode);
+	  m.startComputation();
 	  request.post("/upload").send(data).end(function (err, res) {
 	    console.log(res);
 	    app.imgUrl = "/show/" + res.body.id;
@@ -71,6 +74,9 @@
 	  });
 	};
 	app.imgUrl = null;
+	var loading = "loading";
+	var done = "done";
+	app.state = done;
 	app.controller = function () {
 	  var upImage = app.imgUpload;
 	  var imgUrl = app.imgUrl;
@@ -82,7 +88,7 @@
 	  };
 	};
 	
-	var imgView = function imgView(imgUrl, ctrl) {
+	var imgView = function imgView(imgUrl, ctrl, state) {
 	  var formParam = {
 	    method: "post",
 	    encType: "multipart/form-data"
@@ -92,12 +98,23 @@
 	    var tweetText = window.location.href;
 	    return [m("img", { src: imgUrl }), m("h2", "よいお年を"), m("a", { href: "https://twitter.com/intent/tweet?text=" + tweetText + "&url=" + tweetUrl }, "tweet")];
 	  } else {
-	    return [m("p", "画像をupするとあけおめ入りにするよ（たぶん）"), m("form", formParam, [m("input", { class: "form-group", type: "file", name: makeRand(), encType: "multipart/form-data" }), m("input", { class: "btn btn-default", type: "button", value: "送信", onclick: ctrl.submit })])];
+	    switch (state) {
+	      case loading:
+	        var bar = {
+	          class: "progress-bar progress-bar-striped active",
+	          role: "progressbar",
+	          style: "width: 100%"
+	        };
+	        return m("div", { class: "progress" }, m("div", bar));
+	      case done:
+	        return [m("p", "画像をupするとあけおめ入りにするよ（たぶん）"), m("form", formParam, [m("input", { class: "form-group", type: "file", name: makeRand(), encType: "multipart/form-data" }), m("input", { class: "btn btn-default", type: "button", value: "送信", onclick: ctrl.submit })])];
+	    }
 	  }
 	};
 	
 	app.view = function (ctrl) {
-	  var component = imgView(app.imgUrl, ctrl);
+	  var component = imgView(app.imgUrl, ctrl, app.state);
+	  console.log(app.state);
 	  return m("div", [component]);
 	};
 	
