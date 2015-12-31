@@ -42,13 +42,23 @@ const imgView = (imgUrl, ctrl) => {
     encType: "multipart/form-data"
   };
   if(imgUrl) {
-    return m("img",{src: imgUrl})
+    const tweet = window.location.href + imgUrl.slice(1, imgUrl.length)
+    return (
+      [
+      m("img",{src: imgUrl}),
+      m("h2","よいお年を"),
+      m("a",{href: `https://twitter.com/intent/tweet?text=${tweet}`},"tweet")
+      ]
+    )
   } else {
     return (
+      [
+      m("p","画像をupするとあけおめ入りにするよ（たぶん）"),
       m("form",formParam,[
-      m("input", {type: "file", name: makeRand(), encType: "multipart/form-data"}),
-      m("input", {type: "button", value: "送信", onclick: ctrl.submit})
-    ])
+        m("input", {class: "form-group",type: "file", name: makeRand(), encType: "multipart/form-data"}),
+        m("input", {class: "btn btn-default",type: "button", value: "送信", onclick: ctrl.submit})
+      ])
+    ]
   )
   }
 }
@@ -56,8 +66,7 @@ const imgView = (imgUrl, ctrl) => {
 app.view = (ctrl) => {
   let component = imgView(app.imgUrl, ctrl);
   return m("div",
-  [m("p","あけおめ"),
-  component]
+  [component]
   )
 }
 
