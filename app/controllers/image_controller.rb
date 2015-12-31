@@ -6,23 +6,25 @@ class ImageController < ApplicationController
     img = nil
     params.each do |param|
       if param[1].class == ActionDispatch::Http::UploadedFile then
-        img = EssayImg.new
+        img = Image.new
         img.name = param[0]
         image_magick = Magick::Image.from_blob(param[1].read).shift
-        img.data = image_magick.resize_to_fit(300, 300).to_blob
+        tmp = image_magick.resize_to_fit(300, 300)
+        akeome = Magick::Image.from_blob(File.read("./public/akeome.png")).shift
+        img.data = tmp.composite!(akeome, Magick::SouthWestGravity, Magick::OverCompositeOp).to_blob
         img.save
       end
     end
     if img.nil? then
       render json: {img_name: "error"}
     else
-      render json: {img_name: img.name}
+      render json: {id: img.name}
     end
   end
 
 
   def show
-    img = Image.find_by(name: params[:name])
+    img = Image.find_by(name: params[:id])
     send_data(img.data, :disposition => "inline", :type => "image/jpeg")
   end
 end
